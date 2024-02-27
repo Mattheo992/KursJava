@@ -1,26 +1,35 @@
 package Homework_All_Functionals;
 
-import java.util.function.Consumer;
-
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 public class numberToString {
     public static void main(String[] args) {
-        Consumer<Integer> numberToWord = (number) -> {
-            String[] units = {"zero", "jeden", "dwa", "trzy", "cztery", "pięć", "sześć", "siedem", "osiem", "dziewięć"};
-            String[] teens = {"dziesięć", "jedenaście", "dwanaście", "trzynaście", "czternaście", "piętnaście", "szesnaście", "siedemnaście", "osiemnaście", "dziewiętnaście"};
-            String[] tens = {"", "", "dwadzieścia", "trzydzieści", "czterdzieści", "pięćdziesiąt", "sześćdziesiąt", "siedemdziesiąt", "osiemdziesiąt", "dziewięćdziesiąt"};
-            String[] hundreds = {"", "sto", "dwieście", "trzysta", "czterysta", "pięćset", "sześćset", "siedemset", "osiemset", "dziewięćset"};
-
-            if (number < 10) {
-                System.out.println(units[number]);
-            } else if (number < 20) {
-                System.out.println(teens[number - 10]);
-            } else if (number < 100) {
-                System.out.println(tens[number / 10] + " " + units[number % 10]);
-            } else {
-                System.out.println(hundreds[number / 100] + " " + tens[(number % 100) / 10] + " " + units[number % 10]);
+        Function<Integer, String> changeNumberToText = number ->{
+            if(number <= 10){
+                return numberWordsMap.get(number);
             }
+            else return "Nieobsługiwana liczba";
         };
-        numberToWord.accept(77);
+
+        String numberAsText = changeNumberToText.apply(7);
+        System.out.println(numberAsText);
+    }
+
+    private static final Map<Integer, String> numberWordsMap = new HashMap<>();
+
+    static {
+        numberWordsMap.put(0, "zero");
+        numberWordsMap.put(1, "jeden");
+        numberWordsMap.put(2, "dwa");
+        numberWordsMap.put(3, "trzy");
+        numberWordsMap.put(4, "cztery");
+        numberWordsMap.put(5, "pięć");
+        numberWordsMap.put(6, "sześć");
+        numberWordsMap.put(7, "siedem");
+        numberWordsMap.put(8, "osiem");
+        numberWordsMap.put(9, "dziewięć");
+        numberWordsMap.put(10, "dziesięć");
     }
 }
