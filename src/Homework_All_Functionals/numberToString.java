@@ -8,7 +8,7 @@ public class numberToString {
     public static void main(String[] args) {
         Function<Integer, String> changeNumberToText = number ->{
             if(number <= 10){
-                return numberWordsMap.get(number);
+                return numberToString.changeNumberToText.get(number);
             }
             else return "Nieobsługiwana liczba";
         };
@@ -17,19 +17,19 @@ public class numberToString {
         System.out.println(numberAsText);
     }
 
-    private static final Map<Integer, String> numberWordsMap = new HashMap<>();
+    private static final Map<Integer, String> changeNumberToText = new HashMap<>();
 
-    static {
-        numberWordsMap.put(0, "zero");
-        numberWordsMap.put(1, "jeden");
-        numberWordsMap.put(2, "dwa");
-        numberWordsMap.put(3, "trzy");
-        numberWordsMap.put(4, "cztery");
-        numberWordsMap.put(5, "pięć");
-        numberWordsMap.put(6, "sześć");
-        numberWordsMap.put(7, "siedem");
-        numberWordsMap.put(8, "osiem");
-        numberWordsMap.put(9, "dziewięć");
-        numberWordsMap.put(10, "dziesięć");
+    static  {
+        changeNumberToText.put(0, "zero");
+        changeNumberToText.put(1, "jeden");
+        changeNumberToText.put(2, "dwa");
+        changeNumberToText.put(3, "trzy");
+        changeNumberToText.put(4, "cztery");
+        changeNumberToText.put(5, "pięć");
+        changeNumberToText.put(6, "sześć");
+        changeNumberToText.put(7, "siedem");
+        changeNumberToText.put(8, "osiem");
+        changeNumberToText.put(9, "dziewięć");
+        changeNumberToText.put(10, "dziesięć");
     }
 }
