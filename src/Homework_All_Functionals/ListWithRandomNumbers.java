@@ -18,7 +18,8 @@ public class ListWithRandomNumbers {
         };
 
         List<Integer> randomNumbers = randomListSupplier.get();
-        System.out.println(randomNumbers);
-    }
+
+    };
 
 }
+
