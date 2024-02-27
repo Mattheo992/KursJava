@@ -21,5 +21,6 @@ public class numberToString {
                 System.out.println(hundreds[number / 100] + " " + tens[(number % 100) / 10] + " " + units[number % 10]);
             }
         };
+        numberToWord.accept(77);
     }
 }
