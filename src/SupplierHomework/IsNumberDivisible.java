@@ -8,6 +8,10 @@ public class IsNumberDivisible {
         List<Integer> numbers = List.of(2, 4, 6, 8, 12, 93);
         Predicate<Integer> isNumberDivisible = number -> number % 2 == 0 && number % 3 == 0 & number % 6 == 0;
         numberDivisible(numbers, isNumberDivisible);
+        List<Integer> divisibleNumbers = numbers.stream()
+                .filter(isNumberDivisible)
+                .toList();
+        System.out.println(divisibleNumbers);
         //zrobić na streamach
     }
 
