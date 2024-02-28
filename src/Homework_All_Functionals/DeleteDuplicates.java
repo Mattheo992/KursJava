@@ -16,13 +16,13 @@ public class DeleteDuplicates {
             n.clear();
             n.addAll(withoutDuplicates);
         };
-List<Integer> numbers = new ArrayList<>();
-numbers.add(1);
-numbers.add(1);
-numbers.add(3);
-numbers.add(3);
-numbers.add(5);
-listWithoutDuplicates.accept(numbers);
+        List<Integer> numbers = new ArrayList<>();
+        numbers.add(1);
+        numbers.add(1);
+        numbers.add(3);
+        numbers.add(3);
+        numbers.add(5);
+        listWithoutDuplicates.accept(numbers);
         System.out.println(numbers);
     }
 }
