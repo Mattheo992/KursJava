@@ -13,7 +13,9 @@ public class CheckingPersonalData {
         Predicate<PersonalData> isPersonValid = person -> person.getName().length() > 2 &&
                 person.getSurname().length() > 2 && person.getAge() <= 65;
         checkPersonalDate(people, isPersonValid);
-        List<PersonalData> validPersons = people.stream().filter(isPersonValid).toList();
+        List<PersonalData> validPersons = people.stream()
+                .filter(isPersonValid)
+                .toList();
         System.out.println(validPersons);
 
 
