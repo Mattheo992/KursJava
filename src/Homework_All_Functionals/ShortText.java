@@ -1,22 +1,22 @@
 package Homework_All_Functionals;
 
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class ShortText {
     public static void main(String[] args) {
-        Consumer<String> shortText = text -> {
-           String[] words = text.split(" ");
-           StringBuilder acronym = new StringBuilder();
-          for(String word : words){
-              acronym.append(word.charAt(0));
-          }
-          System.out.println(acronym.toString());
+        Function<String, String> shortText = text -> {
+            String[] words = text.split(" ");
+            StringBuilder acronym = new StringBuilder();
+            for (String word : words) {
+                acronym.append(word.charAt(0));
+            }
+            return acronym.toString();
 
         };
         String originalText = "Grand Theft Auto 5";
-        System.out.println(originalText);
-        shortText.accept(originalText);
+        String apply = shortText.apply(originalText);
+        System.out.println(apply);
 
-        }
     }
+}
 
