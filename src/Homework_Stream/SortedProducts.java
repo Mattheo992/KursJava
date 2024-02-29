@@ -1,6 +1,7 @@
 package Homework_Stream;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class SortedProducts {
@@ -10,7 +11,8 @@ public class SortedProducts {
         products.add(new ProductsOrder(002, "Mouse Accura Salton", 2));
         products.add(new ProductsOrder(003,"Keyboard Thor 380", 3 ));
         products.stream()
-                .sorted((n1, n2)-> n1.getProductName().compareTo(n2.getProductName())).
-                forEach(System.out::println);
+                .sorted(Comparator.comparing(ProductsOrder::getProductName))
+                .forEach(System.out::println);
+
     }
 }
