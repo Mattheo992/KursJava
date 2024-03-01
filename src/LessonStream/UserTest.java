@@ -56,11 +56,52 @@ public class UserTest {
 
         //Oblicz średnią pensję deweloperów w Groovy.
         users.stream()
-                .filter(n-> n.getJob() == Job.GROOVY_DEVELOPER)
+                .filter(n -> n.getJob() == Job.GROOVY_DEVELOPER)
                 .mapToDouble(User::getSalary)
                 .average();
 
 //Znajdź deweloperów z pensją poniżej 5000 i z więcej niż 30 lat.
+        List<User> collect1 = users.stream()
+                .filter(n -> n.getSalary() < 5000 && n.getAge() > 30)
+                .collect(Collectors.toList());
+        System.out.println(collect1);
+
+        //Policz ilość deweloperów pracujących w każdym języku programowania.
+
+        Map<Job, List<User>> usersByJob = users.stream().collect(Collectors.groupingBy(User::getJob));
+        usersByJob.forEach((job, usersList) -> System.out.println(job + " : " + usersList.size()));
+//Znajdź najmłodszego dewelopera pracującego w Kotlin
+        Optional<User> minAgeInKotlin = users.stream()
+                .filter(n -> n.getJob() == Job.KOTLIN_DEVELOPER)
+                .min(Comparator.comparingInt(User::getAge));
+        System.out.println(minAgeInKotlin);
+
+        //Posortuj deweloperów według pensji malejąco.
+        users.stream()
+                .sorted(Comparator.comparingDouble(User::getSalary)
+                        .reversed())
+                .forEach(System.out::println);
+        //Oblicz średnią wieku deweloperów pracujących w Javie.
+
+        OptionalDouble averageAgeInJava = users.stream()
+                .filter(n -> n.getJob() == Job.JAVA_DEVELOPER)
+                .mapToInt(User::getAge)
+                .average();
+        System.out.println(averageAgeInJava);
+        //Znajdź dewelopera z najwyższą pensją.
+        Optional<User> maxSalary = users.stream()
+                .max(Comparator.comparingDouble(User::getSalary));
+        System.out.println(maxSalary);
+        //Znajdź deweloperów w wieku pomiędzy 25 a 35 lat.
+        List<User> ageOver25And35 = users.stream()
+                .filter(n -> n.getAge() >= 25 && n.getAge() <= 35)
+                .collect(Collectors.toList());
+        System.out.println(ageOver25And35);
+//Znajdź deweloperów pracujących w językach programowania zaczynających się na literę "K".
+        users.stream()
+                .filter(n-> n.getJob().toString().toUpperCase().startsWith("K"))
+                .forEach(System.out::println);
+
 
     }
 
