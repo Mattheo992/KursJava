@@ -9,7 +9,7 @@ public class FindAnyNumberWitchIsPowerOf2 {
     public static void main(String[] args) {
 
         List<Integer> numbers = new ArrayList<>(List.of(4, 8, 12, 7, 9));
-        Predicate<Integer> isNumberPowerOf2 = n -> n > 0 && (n & (n - 1)) == 0;
+        Predicate<Integer> isNumberPowerOf2 = n -> n > 0 && Integer.bitCount(n) == 1;
         Optional<Integer> findAnyNumber = numbers.stream()
                 .filter(isNumberPowerOf2)
                 .findAny();
