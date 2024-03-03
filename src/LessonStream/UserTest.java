@@ -99,10 +99,197 @@ public class UserTest {
         System.out.println(ageOver25And35);
 //Znajdź deweloperów pracujących w językach programowania zaczynających się na literę "K".
         users.stream()
-                .filter(n-> n.getJob().toString().toUpperCase().startsWith("K"))
+                .filter(n -> n.getJob().toString().toUpperCase().startsWith("K"))
                 .forEach(System.out::println);
+        //Policz ilość deweloperów pracujących w każdej grupie wiekowej (np. 20-25 lat, 26-30 lat itd.).
 
+        Map<String, Map<Job, Long>> developersByAgeGroup = users.stream()
+                .collect(Collectors.groupingBy(user -> {
+                            int age = user.getAge();
+                            if (age >= 20 && age <= 25) {
+                                return "20-25";
+                            } else if (age >= 26 && age <= 30) {
+                                return "26-30";
+                            } else if (age >= 31 && age <= 35) {
+                                return "31-35";
+                            } else {
+                                return "36+";
+                            }
+                        },
+                        Collectors.groupingBy(User::getJob, Collectors.counting())));
+
+        developersByAgeGroup.forEach((ageGroup, jobCount) -> {
+            System.out.println("Age group: " + ageGroup);
+            jobCount.forEach((job, count) -> {
+                System.out.println(job + ": " + count);
+            });
+        });
+
+//        Znajdź dewelopera o imieniu z największą liczbą liter.
+        Optional<User> shortestSurname = users.stream()
+                .min(Comparator.comparing(n -> n.getSurname().length()));
+
+        //Znajdź dewelopera o imieniu z największą liczbą liter.
+        Optional<User> lognestName = users.stream().max(Comparator.comparing(n -> n.getName()));
+        lognestName.stream().forEach(name -> System.out.println("Najwięcej liter w imieniu ma " + name.getName()
+                + " i ma " + name.getName().length() + " liter."));
+//Oblicz sumę zarobków deweloperów pracujących w Groovy.
+        double sumInGroovy = users.stream()
+                .filter(n -> n.getJob() == Job.GROOVY_DEVELOPER)
+                .mapToDouble(User::getSalary)
+                .sum();
+        System.out.println(sumInGroovy);
+//Oblicz sumę zarobków deweloperów pracujących w Javie i Kotlin.
+        double sum = users.stream().filter(n -> n.getJob() == Job.JAVA_DEVELOPER || n.getJob() == Job.KOTLIN_DEVELOPER)
+                .mapToDouble(User::getSalary)
+                .sum();
+        System.out.println(sum);
+        //Oblicz średnią pensję deweloperów, którzy mają więcej niż 25 lat, ale mniej niż 35 lat.
+        OptionalDouble averageByAge = users.stream().filter(n -> n.getAge() > 25 && n.getAge() < 35)
+                .mapToDouble(User::getSalary)
+                .average();
+        System.out.println(averageByAge);
+//Posortuj deweloperów według pensji, a dla tych samych pensji według wieku malejąco.
+        users.stream()
+                .sorted(Comparator.comparingDouble(User::getSalary).thenComparing(User::getAge).reversed())
+                .forEach(System.out::println);
+        //Policz ilość deweloperów, których zarobki są powyżej średniej pensji wszystkich deweloperów.
+        Long developersWithSalaryAboveAverage = users.stream()
+                .collect(Collectors.collectingAndThen(Collectors.teeing(Collectors.averagingDouble(User::getSalary),
+                        Collectors.counting(), (averageSalary, totalCount) -> users
+                                .stream().
+                                filter(n -> n.getSalary() > averageSalary).count()), result -> result));
+        System.out.println(developersWithSalaryAboveAverage);
+
+        //Znajdź dewelopera, który zarabia mniej niż średnia pensja wszystkich deweloperów, ale ma więcej niż średni wiek.
+        User collect2 = users.stream()
+                .collect(Collectors.collectingAndThen(Collectors.teeing(Collectors.averagingDouble(User::getSalary)
+                                , Collectors.averagingInt(User::getAge), (averageSalary, averageAge) -> users.stream()
+                                        .filter(n -> n.getSalary() < averageSalary && n.getAge() > averageAge)
+                                        .findFirst().orElse(null)),
+                        user -> user));
+        System.out.println(collect2);
+//Znajdź dewelopera z największą różnicą wieku między nim a najstarszym deweloperem w tym samym języku programowania.
+        Map<Job, List<User>> result = users.stream()
+                .collect(Collectors.groupingBy(User::getJob, Collectors.toList()))
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> {
+                    Optional<User> maxUser = e.getValue().stream().max(Comparator.comparing(User::getAge));
+                    Optional<User> minUser = e.getValue().stream().min(Comparator.comparing(User::getAge));
+                    if (maxUser.isPresent() && minUser.isPresent()) {
+                        long difference = maxUser.get().getAge() - minUser.get().getAge();
+                        return List.of(maxUser.get(), minUser.get());
+                    } else {
+                        return List.of();
+                    }
+                }));
+
+        result.forEach((job, developers) -> {
+            System.out.println("Stanowisko: " + job);
+            if (developers.size() == 2) {
+                System.out.println("Deweloperzy z największą różnicą wieku to: " + developers.get(0).getName() + " i " + developers.get(1).getName());
+            } else {
+                System.out.println("nie znaleziono doweloperów w : " + job);
+            }
+        });
+        // Znajdź deweloperów, których zarobki są najbliższe średniej pensji dla deweloperów w ich języku programowania.
+        Map<Job, Double> averageSalaryByJob = users.stream().
+                collect(Collectors.groupingBy(User::getJob,
+                        Collectors.averagingDouble(User::getSalary)));
+
+        Map<Job, User> closestToAverageSalaryByJob = users.stream()
+                .collect(Collectors.groupingBy(User::getJob,
+                        Collectors.collectingAndThen(
+                                Collectors.minBy(Comparator.comparingDouble(u ->
+                                        u.getSalary() - averageSalaryByJob.get(u.getJob()))),
+                                Optional::get
+                        )
+                ));
+
+        closestToAverageSalaryByJob.forEach((job, user) -> {
+            System.out.println("Stanowisko: " + job);
+            if (user != null) {
+                System.out.println("Deweloperzy najbliżej średniej zarobków to: " + user.getName()
+                        + " " + user.getSurname() + ", Pensja: " + user.getSalary());
+            } else {
+                System.out.println("Nie znaleziono deweloperów na stanowisku: " + job);
+            }
+        });
+//Znajdź dewelopera z największą liczbą unikalnych liter w jego imieniu i nazwisku.
+        Optional<User> maxUniqueChars = users.stream()
+                .max((n1, n2) -> {
+                    String fullName1 = n1.getName() + n1.getSurname();
+                    String fullName2 = n2.getName() + n2.getSurname();
+                    return Long.compare(fullName1.chars().distinct().count(), fullName2.chars().distinct().count());
+                });
+
+        System.out.println(maxUniqueChars);
+        //   Znajdź dewelopera, który jest najmłodszy w swojej grupie wiekowej,
+        //         ale zarabia więcej niż średnia pensja dla deweloperów w jego języku programowania.
+        Map<Job, Double> salaryByJob = users.stream()
+                .collect(Collectors.groupingBy(User::getJob, Collectors.averagingDouble(User::getSalary)));
+        users.stream()
+                .filter(user -> user.getAge() >= 20)
+                .collect(Collectors.groupingBy(user -> {
+                    if (user.getAge() <= 25) {
+                        return "20-25";
+                    } else if (user.getAge() <= 30) {
+                        return "26-30";
+                    } else if (user.getAge() <= 36) {
+                        return "31-36";
+                    } else {
+                        return "+36";
+                    }
+                }))
+                .forEach((ageGroup, userList) -> {
+                    User youngestDeveloper = userList.stream()
+                            .filter(user -> user.getSalary() > averageSalaryByJob.get(user.getJob()))
+                            .min(Comparator.comparingInt(User::getAge))
+                            .orElse(null);
+
+                    if (youngestDeveloper != null) {
+                        System.out.println("Najmłodszym deweloperem w grupie z zarobkami powyżej średniej jest w  "
+                                + ageGroup + ": " + youngestDeveloper.getName() + " " + youngestDeveloper.getSurname()
+                                + " " + youngestDeveloper.getSalary());
+                    }
+                });
+        //Znajdź dewelopera, który ma zarobki najbliższe medianie pensji dla deweloperów w wieku od 30 do 40 lat.
+        Optional<User> developerClosestToMedianSalary = users.stream()
+                .filter(user -> user.getAge() >= 30 && user.getAge() <= 40)
+                .min(Comparator.comparingDouble(user -> user.getSalary() - calculateMedianSalary(users)));
+        developerClosestToMedianSalary.ifPresent(dev -> System.out.println("Deweloper z pensją najbliżej mediany to: "
+                + dev.getName() + " " + dev.getSurname()));
 
     }
 
+    public static double calculateMedianSalary(List<User> users) {
+        List<Double> salariesForDevelopersAged30to40 = users.stream()
+                .filter(user -> user.getAge() >= 30 && user.getAge() <= 40)
+                .map(User::getSalary)
+                .sorted()
+                .collect(Collectors.toList());
+
+        double medianSalary;
+        int size = salariesForDevelopersAged30to40.size();
+        if (size % 2 == 0) {
+            medianSalary = (salariesForDevelopersAged30to40.get(size / 2 - 1) + salariesForDevelopersAged30to40.get(size / 2)) / 2.0;
+        } else {
+            medianSalary = salariesForDevelopersAged30to40.get(size / 2);
+        }
+        return medianSalary;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
