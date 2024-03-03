@@ -119,22 +119,23 @@ public class UserTest {
                         Collectors.groupingBy(User::getJob, Collectors.counting())));
 
         developersByAgeGroup.forEach((ageGroup, jobCount) -> {
-            System.out.println("Age group: " + ageGroup);
+            System.out.println("Grupa wiekowa: " + ageGroup);
             jobCount.forEach((job, count) -> {
                 System.out.println(job + ": " + count);
             });
         });
 
-//        Znajdź dewelopera o imieniu z największą liczbą liter.
+//        Znajdź dewelopera o najkrótszym nazwisku.
         Optional<User> shortestSurname = users.stream()
                 .min(Comparator.comparing(n -> n.getSurname().length()));
-
+        System.out.println(shortestSurname);
+        shortestSurname.ifPresent(System.out::println);
         //Znajdź dewelopera o imieniu z największą liczbą liter.
         Optional<User> lognestName = users.stream()
                 .max(Comparator.comparing(n -> n.getName()));
         lognestName.stream()
                 .forEach(name -> System.out.println("Najwięcej liter w imieniu ma " + name.getName()
-                + " i ma " + name.getName().length() + " liter."));
+                        + " i ma " + name.getName().length() + " liter."));
 //Oblicz sumę zarobków deweloperów pracujących w Groovy.
         double sumInGroovy = users.stream()
                 .filter(n -> n.getJob() == Job.GROOVY_DEVELOPER)
@@ -147,7 +148,8 @@ public class UserTest {
                 .sum();
         System.out.println(sum);
         //Oblicz średnią pensję deweloperów, którzy mają więcej niż 25 lat, ale mniej niż 35 lat.
-        OptionalDouble averageByAge = users.stream().filter(n -> n.getAge() > 25 && n.getAge() < 35)
+        OptionalDouble averageByAge = users.stream()
+                .filter(n -> n.getAge() > 25 && n.getAge() < 35)
                 .mapToDouble(User::getSalary)
                 .average();
         System.out.println(averageByAge);
@@ -158,11 +160,12 @@ public class UserTest {
         //Policz ilość deweloperów, których zarobki są powyżej średniej pensji wszystkich deweloperów.
         Long developersWithSalaryAboveAverage = users.stream()
                 .collect(Collectors.collectingAndThen(Collectors.teeing(Collectors.averagingDouble(User::getSalary),
-                        Collectors.counting(), (averageSalary, totalCount) -> users
-                                .stream().
-                                filter(n -> n.getSalary() > averageSalary).count()),
+                                Collectors.counting(), (averageSalary, totalCount) -> users
+                                        .stream().
+                                        filter(n -> n.getSalary() > averageSalary).count()),
                         result -> result));
         System.out.println(developersWithSalaryAboveAverage);
+
 
         //Znajdź dewelopera, który zarabia mniej niż średnia pensja wszystkich deweloperów, ale ma więcej niż średni wiek.
         User collect2 = users.stream()
@@ -226,7 +229,6 @@ public class UserTest {
                     String fullName2 = n2.getName() + n2.getSurname();
                     return Long.compare(fullName1.chars().distinct().count(), fullName2.chars().distinct().count());
                 });
-
         System.out.println(maxUniqueChars);
         //   Znajdź dewelopera, który jest najmłodszy w swojej grupie wiekowej,
         //         ale zarabia więcej niż średnia pensja dla deweloperów w jego języku programowania.
