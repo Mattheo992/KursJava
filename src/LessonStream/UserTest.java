@@ -130,8 +130,10 @@ public class UserTest {
                 .min(Comparator.comparing(n -> n.getSurname().length()));
 
         //Znajdź dewelopera o imieniu z największą liczbą liter.
-        Optional<User> lognestName = users.stream().max(Comparator.comparing(n -> n.getName()));
-        lognestName.stream().forEach(name -> System.out.println("Najwięcej liter w imieniu ma " + name.getName()
+        Optional<User> lognestName = users.stream()
+                .max(Comparator.comparing(n -> n.getName()));
+        lognestName.stream()
+                .forEach(name -> System.out.println("Najwięcej liter w imieniu ma " + name.getName()
                 + " i ma " + name.getName().length() + " liter."));
 //Oblicz sumę zarobków deweloperów pracujących w Groovy.
         double sumInGroovy = users.stream()
@@ -158,7 +160,8 @@ public class UserTest {
                 .collect(Collectors.collectingAndThen(Collectors.teeing(Collectors.averagingDouble(User::getSalary),
                         Collectors.counting(), (averageSalary, totalCount) -> users
                                 .stream().
-                                filter(n -> n.getSalary() > averageSalary).count()), result -> result));
+                                filter(n -> n.getSalary() > averageSalary).count()),
+                        result -> result));
         System.out.println(developersWithSalaryAboveAverage);
 
         //Znajdź dewelopera, który zarabia mniej niż średnia pensja wszystkich deweloperów, ale ma więcej niż średni wiek.
