@@ -170,35 +170,30 @@ public class UserTest {
                                         .findFirst().orElse(null)),
                         user -> user));
         System.out.println(collect2);
-//Znajdź dewelopera z największą różnicą wieku między nim a najstarszym deweloperem w tym samym języku programowania do poprawy.
-        Map<Job, List<User>> result = users.stream()
-                .collect(Collectors.groupingBy(User::getJob, Collectors.toList()))
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> {
-                    Optional<User> maxUser = e.getValue()
-                            .stream()
-                            .max(Comparator.comparing(User::getAge));
-                    Optional<User> minUser = e.getValue()
-                            .stream()
-                            .min(Comparator.comparing(User::getAge));
-                    if (maxUser.isPresent() && minUser.isPresent()) {
-                        long difference = maxUser.get().getAge() - minUser.get().getAge();
-                        return List.of(maxUser.get(), minUser.get());
-                    } else {
-                        return List.of();
-                    }
-                }));
+//Znajdź dewelopera z największą różnicą wieku między nim a najstarszym deweloperem
+// w tym samym języku programowania do poprawy.
 
-        result.forEach((job, developers) -> {
-            System.out.println("Stanowisko: " + job);
-            if (developers.size() == 2) {
-                System.out.println("Deweloperzy z największą różnicą wieku to: " + developers.get(0).getName()
-                        + " i " + developers.get(1).getName());
+        Map<Job, User> maxAgeDifferenceDevelopers = users.stream()
+                .collect(Collectors.groupingBy(User::getJob,
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                userList -> userList.stream()
+                                        .max(Comparator.comparingInt(user -> getAgeDifferenceToOldestInSameJob(user, users)))
+                                        .orElse(null)
+                        )
+                ));
+
+        maxAgeDifferenceDevelopers.forEach((job, user) -> {
+            if (user != null) {
+                System.out.println("Największa różnica wieku dla " + job + " wynosi " +
+                        getAgeDifferenceToOldestInSameJob(user, users) + " lat i należy do " +
+                        user.getName() + " " + user.getSurname());
             } else {
-                System.out.println("nie znaleziono doweloperów w : " + job);
+                System.out.println("Nie znaleziono dewelopera dla " + job);
             }
         });
+
+
         // Znajdź deweloperów, których zarobki są najbliższe średniej pensji dla deweloperów w ich języku programowania.
         Map<Job, Double> averageSalaryByJob = users.stream().
                 collect(Collectors.groupingBy(User::getJob,
@@ -267,6 +262,15 @@ public class UserTest {
                 + dev.getName() + " " + dev.getSurname()));
 
     }
+    public static int getAgeDifferenceToOldestInSameJob(User user, List<User> allUsers) {
+        int maxAgeInSameJob = allUsers.stream()
+                .filter(u -> u.getJob() == user.getJob())
+                .mapToInt(User::getAge)
+                .max()
+                .orElse(user.getAge());
+
+        return Math.abs(maxAgeInSameJob - user.getAge());
+    }
 
     public static double calculateMedianSalary(List<User> users) {
         List<Double> salariesForDevelopersAged30to40 = users.stream()
@@ -284,8 +288,9 @@ public class UserTest {
         }
         return medianSalary;
     }
-}
 
+
+}
 
 
 
