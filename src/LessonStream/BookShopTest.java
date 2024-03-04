@@ -50,7 +50,7 @@ public class BookShopTest {
         double averagePublishYear = books.stream()
                 .mapToInt(Book::getPublicationYear)
                 .average().orElse(0.0);
-        System.out.println("rednia rok publikacji " + averagePublishYear);
+        System.out.println("średnia rok publikacji " + averagePublishYear);
 
         //Posortuj książki najpierw po cenie, a następnie po roku publikacji rosnąco.
         books.stream()
