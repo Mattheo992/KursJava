@@ -103,7 +103,7 @@ public class UserTest {
                 .forEach(System.out::println);
         //Policz ilość deweloperów pracujących w każdej grupie wiekowej (np. 20-25 lat, 26-30 lat itd.).
 
-        Map<String, Map<Job, Long>> developersByAgeGroup = users.stream()
+        Map<String, Long> developersByAgeGroup = users.stream()
                 .collect(Collectors.groupingBy(user -> {
                             int age = user.getAge();
                             if (age >= 20 && age <= 25) {
@@ -116,23 +116,19 @@ public class UserTest {
                                 return "36+";
                             }
                         },
-                        Collectors.groupingBy(User::getJob, Collectors.counting())));
+                        Collectors.counting()));
 
-        developersByAgeGroup.forEach((ageGroup, jobCount) -> {
-            System.out.println("Grupa wiekowa: " + ageGroup);
-            jobCount.forEach((job, count) -> {
-                System.out.println(job + ": " + count);
-            });
-        });
 
 //        Znajdź dewelopera o najkrótszym nazwisku.
         Optional<User> shortestSurname = users.stream()
+                .filter(n -> n.getSurname() != null)
                 .min(Comparator.comparing(n -> n.getSurname().length()));
         System.out.println(shortestSurname);
         shortestSurname.ifPresent(System.out::println);
         //Znajdź dewelopera o imieniu z największą liczbą liter.
         Optional<User> lognestName = users.stream()
-                .max(Comparator.comparing(n -> n.getName()));
+                .filter(n -> n.getName() != null)
+                .max(Comparator.comparing(n -> n.getName().length()));
         lognestName.stream()
                 .forEach(name -> System.out.println("Najwięcej liter w imieniu ma " + name.getName()
                         + " i ma " + name.getName().length() + " liter."));
@@ -160,9 +156,8 @@ public class UserTest {
         //Policz ilość deweloperów, których zarobki są powyżej średniej pensji wszystkich deweloperów.
         Long developersWithSalaryAboveAverage = users.stream()
                 .collect(Collectors.collectingAndThen(Collectors.teeing(Collectors.averagingDouble(User::getSalary),
-                                Collectors.counting(), (averageSalary, totalCount) -> users
-                                        .stream().
-                                        filter(n -> n.getSalary() > averageSalary).count()),
+                                Collectors.counting(), (averageSalary, totalCount) -> users.stream()
+                                        .filter(n -> n.getSalary() > averageSalary).count()),
                         result -> result));
         System.out.println(developersWithSalaryAboveAverage);
 
@@ -175,7 +170,7 @@ public class UserTest {
                                         .findFirst().orElse(null)),
                         user -> user));
         System.out.println(collect2);
-//Znajdź dewelopera z największą różnicą wieku między nim a najstarszym deweloperem w tym samym języku programowania.
+//Znajdź dewelopera z największą różnicą wieku między nim a najstarszym deweloperem w tym samym języku programowania do poprawy.
         Map<Job, List<User>> result = users.stream()
                 .collect(Collectors.groupingBy(User::getJob, Collectors.toList()))
                 .entrySet()
