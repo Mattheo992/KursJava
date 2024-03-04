@@ -181,8 +181,12 @@ public class UserTest {
                 .entrySet()
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> {
-                    Optional<User> maxUser = e.getValue().stream().max(Comparator.comparing(User::getAge));
-                    Optional<User> minUser = e.getValue().stream().min(Comparator.comparing(User::getAge));
+                    Optional<User> maxUser = e.getValue()
+                            .stream()
+                            .max(Comparator.comparing(User::getAge));
+                    Optional<User> minUser = e.getValue()
+                            .stream()
+                            .min(Comparator.comparing(User::getAge));
                     if (maxUser.isPresent() && minUser.isPresent()) {
                         long difference = maxUser.get().getAge() - minUser.get().getAge();
                         return List.of(maxUser.get(), minUser.get());
@@ -194,7 +198,8 @@ public class UserTest {
         result.forEach((job, developers) -> {
             System.out.println("Stanowisko: " + job);
             if (developers.size() == 2) {
-                System.out.println("Deweloperzy z największą różnicą wieku to: " + developers.get(0).getName() + " i " + developers.get(1).getName());
+                System.out.println("Deweloperzy z największą różnicą wieku to: " + developers.get(0).getName()
+                        + " i " + developers.get(1).getName());
             } else {
                 System.out.println("nie znaleziono doweloperów w : " + job);
             }
