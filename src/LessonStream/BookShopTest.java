@@ -97,15 +97,17 @@ public class BookShopTest {
         System.out.println(sumOfPricesIfPublishingYearIsFirst);
         //Znajdź książkę, która ma najdłuższy tytuł spośród wszystkich książek.
         Book bookWithMaxChars = books.stream()
-                .max(Comparator.comparing(n -> n.getTitle().length())).orElse(null);
+                .max(Comparator.comparing(n -> n.getTitle().length()))
+                .orElse(null);
         System.out.println("książka z najdłuższym tytułem to: " + bookWithMaxChars.getTitle());
         //Zwróć listę tytułów książek, które rozpoczynają się od litery "C" i kończą na "e".
         List<Book> booksWithTitleStartedWithCAndAndWithE = books.stream()
-                .filter(n -> n.getTitle().startsWith("C") && n.getTitle().endsWith("e"))
+                .filter(n -> n.getTitle().toUpperCase().startsWith("C") && n.getTitle().toLowerCase().endsWith("e"))
                 .collect(Collectors.toList());
         booksWithTitleStartedWithCAndAndWithE.forEach(System.out::println);
 //Znajdź najtańszą książkę, która ma co najmniej dwóch autorów.
         Optional<Book> cheapestBookWithMin2Authors = books.stream()
+                .filter(n -> n.getAuthor() != null)
                 .filter(n -> n.getAuthor().split(", ").length >= 2)
                 .min(Comparator.comparingDouble(Book::getPrice));
         if (cheapestBookWithMin2Authors.isPresent()) {
@@ -132,7 +134,7 @@ public class BookShopTest {
         //Sprawdź, czy wszystkie dostępne książki są droższe od 30.
         boolean areEveryAvailableBooksAreMoreExpensiveThan30 = books.stream()
                 .filter(Book::isAvailable)
-                        .allMatch(n -> n.getPrice() > 30);
+                .allMatch(n -> n.getPrice() > 30);
         if (areEveryAvailableBooksAreMoreExpensiveThan30) {
             System.out.println("Wszystkie dostępne książki są droższe od 30");
         } else {
