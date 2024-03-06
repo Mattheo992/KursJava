@@ -1,4 +1,8 @@
-package homework.model;
+package homework.generator;
+
+import homework.model.Account;
+import homework.model.Permit;
+import homework.model.Sex;
 
 import java.util.List;
 

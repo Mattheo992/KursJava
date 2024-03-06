@@ -1,7 +1,6 @@
 package homework.generator;
 
 import homework.model.Company;
-import homework.model.User;
 
 import java.util.Arrays;
 import java.util.List;

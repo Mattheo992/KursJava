@@ -1,5 +1,7 @@
 package homework.model;
 
+import homework.generator.User;
+
 import java.util.List;
 
 public class Company {

@@ -3,7 +3,6 @@ package homework.generator;
 import homework.model.Account;
 import homework.model.Permit;
 import homework.model.Sex;
-import homework.model.User;
 
 import java.util.Arrays;
 import java.util.LinkedList;
