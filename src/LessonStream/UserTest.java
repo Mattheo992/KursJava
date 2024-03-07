@@ -1,6 +1,7 @@
 package LessonStream;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class UserTest {
@@ -49,10 +50,57 @@ public class UserTest {
         user11.addInferior(user13);
         user13.addInferior(user14);
         user14.addInferior(user15);
-
-        List<User> javaDevelopers = users.stream()
+//Oblicz średnią pensję dla wszystkich podwładnych Java Developerów dla danego użytkownika.
+        Map<User, Double> collect3 = users.stream()
                 .filter(n -> n.getJob() == Job.JAVA_DEVELOPER)
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors()
+                        .stream().mapToDouble(User::getSalary).average().orElse(0.0)));
+
+//Znajdź podwładnego (z dowolnego stanowiska) danego użytkownika, który zarabia najwięcej i ma mniej niż 30 lat.
+        Map<User, Optional<User>> collect4 = users.stream().
+                flatMap(n -> n.getInferiors().stream())
+                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                        .filter(n -> n.getAge() < 30)
+                        .max(Comparator.comparing(User::getSalary))));
+//Zlicz liczbę podwładnych dla każdego użytkownika, którzy mają więcej niż 25 lat.
+        Map<User, Long> collect5 = users.stream()
+                .filter(n -> n.getAge() > 25)
+                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                        .count()));
+//Znajdź najstarszego podwładnego dla każdego użytkownika.
+        Map<User, User> collect6 = users.stream()
+                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                        .max(Comparator.comparing(User::getAge)).orElse(null)));
+//Uzyskaj listę wszystkich podwładnych Java Developerów danego użytkownika, którzy zarabiają więcej niż 5000.
+        Map<User, List<User>> collect7 = users.stream()
+                .filter(n -> n.getJob() == Job.JAVA_DEVELOPER && n.getSalary() > 5000)
+                .collect(Collectors.toMap(Function.identity(), User::getInferiors));
+//Oblicz średnią wieku dla wszystkich podwładnych dla każdego stanowiska pracy.
+        Map<User, OptionalDouble> collect8 = users.stream()
+                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                        .mapToInt(User::getAge)
+                        .average()));
+//Znajdź najmłodszego podwładnego dla każdego stanowiska pracy.
+        Map<Job, Optional<User>> collect11 = users.stream()
+                .flatMap(n -> n.getInferiors().stream())
+                .collect(Collectors.groupingBy(User::getJob, Collectors
+                        .minBy(Comparator.comparingInt(User::getAge))));
+
+//Uzyskaj listę unikalnych imion wszystkich podwładnych danego użytkownika.
+        Map<User, List<String>> collect9 = users.stream()
+                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                        .map(User::getName)
+                        .distinct()
+                        .collect(Collectors.toList())));
+//Znajdź podwładnego, który zarabia najwięcej i jednocześnie ma najwięcej podwładnych.
+        Map<User, Optional<User>> collect10 = users.stream()
+                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                        .max(Comparator.comparingDouble(User::getSalary).thenComparing(n -> n.getInferiors().size()))));
+
+//Zlicz liczbę unikalnych stanowisk pracy wszystkich podwładnych dla danego użytkownika.
+                        List < User > javaDevelopers = users.stream()
+                                .filter(n -> n.getJob() == Job.JAVA_DEVELOPER)
+                                .toList();
 
         double totalSalary = users.stream()
                 .mapToDouble(User::getSalary)
@@ -290,6 +338,7 @@ public class UserTest {
                 + dev.getName() + " " + dev.getSurname()));
 
     }
+
     public static int getAgeDifferenceToOldestInSameJob(User user, List<User> allUsers) {
         int maxAgeInSameJob = allUsers.stream()
                 .filter(u -> u.getJob() == user.getJob())

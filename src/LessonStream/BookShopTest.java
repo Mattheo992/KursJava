@@ -142,7 +142,7 @@ public class BookShopTest {
         }
         //Znajdź najmłodszą dostępną książkę.
         books.stream()
-                .filter(n -> n.isAvailable())
+                .filter(Book::isAvailable)
                 .min(Comparator.comparing(Book::getPublicationYear));
         //Znajdź autora, który ma najwięcej książek w zbiorze.
         books.stream()
@@ -179,13 +179,14 @@ public class BookShopTest {
                 .collect(Collectors.groupingBy(Book::getAuthor
                         , Collectors.averagingDouble(Book::getPrice)));
         //Znajdź najtańszą dostępną książkę autorstwa konkretnego autora.
-        books.stream()
+        Map<String, Optional<Book>> collect3 = books.stream()
                 .filter(Book::isAvailable)
                 .collect(Collectors.groupingBy(Book::getAuthor
-                        , Collectors.minBy((b1, b2) -> Double.compare(b1.getPrice(), b2.getPrice()))));
+                        , Collectors.minBy(Comparator.comparingDouble(Book::getPrice))));
+        System.out.println(collect3);
         //Utwórz listę książek z unikalnymi tytułami.
-        books.stream().
-                map(Book::getTitle)
+        books.stream()
+                .map(Book::getTitle)
                 .distinct()
                 .collect(Collectors.toList());
     }
