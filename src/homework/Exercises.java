@@ -203,13 +203,14 @@ public class Exercises {
      * Zosia Psikuta, Zenon Kucowski, Zenek Jawowy ... Alfred Pasibrzuch, Adam Wojcik //w jednej lini odcielone przecinkami
      */
     public static void showAllUser() {
-        HOLDINGS.stream()
+        String collect = HOLDINGS.stream()
                 .flatMap(holding -> holding.getCompanies().stream())
                 .flatMap(company -> company.getUsers().stream())
                 .sorted(Comparator.comparing(User::getFirstName, Comparator.reverseOrder())
                         .thenComparing(Comparator.comparing(User::getLastName)))
                 .map(user -> user.getFirstName() + " " + user.getLastName())
                 .collect(Collectors.joining(", "));
+        System.out.println(collect);
     }
 
     /**

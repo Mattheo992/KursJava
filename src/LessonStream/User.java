@@ -1,5 +1,6 @@
 package LessonStream;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 //dodac metodę addInferiors
@@ -21,6 +22,13 @@ public class User {
         this.salary = salary;
         this.age = age;
         this.job = job;
+        this.inferiors = new ArrayList<>();
+    }
+    public void addInferior(User inferior){
+        this.inferiors.add(inferior);
+    }
+    public List<User> getInferiors(){
+        return this.inferiors;
     }
 
     @Override

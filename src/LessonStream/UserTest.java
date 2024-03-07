@@ -6,22 +6,50 @@ import java.util.stream.Collectors;
 public class UserTest {
     public static void main(String[] args) {
         List<User> users = new ArrayList<>();
+        User user1 = new User(1L, "Ada", "Antczak", "a_antczak@email.com", 3456.5, 20, Job.JAVA_DEVELOPER);
+        User user2 = new User(2L, "Beata", "Byk", "b_byk@email.com", 11223.5, 33, Job.SCALA_DEVELOPER);
+        User user3 = new User(3L, "Czesław", "Cios", "c_cios@email.com", 6500.D, 33, Job.JAVA_DEVELOPER);
+        User user4 = new User(4L, "Daria", "Chodkowska", "d_chodkowska@email.com", 2344.3, 40, Job.JAVA_DEVELOPER);
+        User user5 = new User(5L, "Artur", "Boski", "a_boski@email.com", 8798.1, 21, Job.KOTLIN_DEVELOPER);
+        User user6 = new User(6L, "Grzegorz", "Cyrych", "g_cytych@email.com", 12333D, 25, Job.GROOVY_DEVELOPER);
+        User user7 = new User(7L, "Igor", "Drzewicki", "i_drzewicki@email.com", 12333D, 26, Job.JAVA_DEVELOPER);
+        User user8 = new User(8L, "Lidia", "Figura", "l_figura@email.com", 1243D, 28, Job.SCALA_DEVELOPER);
+        User user9 = new User(9L, "Norbert", "Gość", "n_gosc@email.com", 12322D, 45, Job.GROOVY_DEVELOPER);
+        User user10 = new User(10L, "Urszula", "Grotkowska", "u_grotkowska@email.com", 11333D, 30, Job.SCALA_DEVELOPER);
+        User user11 = new User(11L, "Henryk", "Herman", "h_herman@email.com", 5000D, 22, Job.JAVA_DEVELOPER);
+        User user12 = new User(12L, "Izabela", "Inglot", "i_inglot@email.com", 7800D, 31, Job.SCALA_DEVELOPER);
+        User user13 = new User(13L, "Jan", "Jarosz", "j_jarosz@email.com", 9200D, 29, Job.JAVA_DEVELOPER);
+        User user14 = new User(14L, "Katarzyna", "Kowalska", "k_kowalska@email.com", 4500D, 35, Job.KOTLIN_DEVELOPER);
+        User user15 = new User(15L, "Leszek", "Lis", "l_lis@email.com", 6700D, 27, Job.GROOVY_DEVELOPER);
+        users.add(user1);
+        users.add(user2);
+        users.add(user3);
+        users.add(user4);
+        users.add(user5);
+        users.add(user6);
+        users.add(user7);
+        users.add(user8);
+        users.add(user9);
+        users.add(user10);
+        users.add(user11);
+        users.add(user12);
+        users.add(user13);
+        users.add(user14);
+        users.add(user15);
 
-        users.add(new User(1L, "Ada", "Antczak", "a_antczak@email.com", 3456.5, 20, Job.JAVA_DEVELOPER));
-        users.add(new User(2L, "Beata", "Byk", "b_byk@email.com", 11223.5, 33, Job.SCALA_DEVELOPER));
-        users.add(new User(3L, "Czesław", "Cios", "c_cios@email.com", 6500.D, 33, Job.JAVA_DEVELOPER));
-        users.add(new User(4L, "Daria", "Chodkowska", "d_chodkowska@email.com", 2344.3, 40, Job.JAVA_DEVELOPER));
-        users.add(new User(5L, "Artur", "Boski", "a_boski@email.com", 8798.1, 21, Job.KOTLIN_DEVELOPER));
-        users.add(new User(6L, "Grzegorz", "Cyrych", "g_cytych@email.com", 12333D, 25, Job.GROOVY_DEVELOPER));
-        users.add(new User(7L, "Igor", "Drzewicki", "i_drzewicki@email.com", 12333D, 26, Job.JAVA_DEVELOPER));
-        users.add(new User(8L, "Lidia", "Figura", "l_figura@email.com", 1243D, 28, Job.SCALA_DEVELOPER));
-        users.add(new User(9L, "Norbert", "Gość", "n_gosc@email.com", 12322D, 45, Job.GROOVY_DEVELOPER));
-        users.add(new User(10L, "Urszula", "Grotkowska", "u_grotkowska@email.com", 11333D, 30, Job.SCALA_DEVELOPER));
-        users.add(new User(11L, "Henryk", "Herman", "h_herman@email.com", 5000D, 22, Job.JAVA_DEVELOPER));
-        users.add(new User(12L, "Izabela", "Inglot", "i_inglot@email.com", 7800D, 31, Job.SCALA_DEVELOPER));
-        users.add(new User(13L, "Jan", "Jarosz", "j_jarosz@email.com", 9200D, 29, Job.JAVA_DEVELOPER));
-        users.add(new User(14L, "Katarzyna", "Kowalska", "k_kowalska@email.com", 4500D, 35, Job.KOTLIN_DEVELOPER));
-        users.add(new User(15L, "Leszek", "Lis", "l_lis@email.com", 6700D, 27, Job.GROOVY_DEVELOPER));
+        user1.addInferior(user2);
+        user1.addInferior(user3);
+        user3.addInferior(user4);
+        user4.addInferior(user5);
+        user6.addInferior(user7);
+        user6.addInferior(user8);
+        user8.addInferior(user9);
+        user9.addInferior(user10);
+        user11.addInferior(user12);
+        user11.addInferior(user13);
+        user13.addInferior(user14);
+        user14.addInferior(user15);
+
         List<User> javaDevelopers = users.stream()
                 .filter(n -> n.getJob() == Job.JAVA_DEVELOPER)
                 .collect(Collectors.toList());
