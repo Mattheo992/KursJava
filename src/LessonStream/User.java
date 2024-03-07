@@ -1,7 +1,8 @@
 package LessonStream;
 
+import java.util.List;
 import java.util.Objects;
-
+//dodac metodę addInferiors
 public class User {
     private long id;
     private String name;
@@ -10,6 +11,7 @@ public class User {
     private double salary;
     private int age;
     private Job job;
+    private List<User> inferiors;
 
     public User(long id, String name, String surname, String mail, double salary, int age, Job job) {
         this.id = id;

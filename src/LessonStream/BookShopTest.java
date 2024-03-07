@@ -140,6 +140,54 @@ public class BookShopTest {
         } else {
             System.out.println("Nie wszystkie dostepne książki są droższe od 30");
         }
+        //Znajdź najmłodszą dostępną książkę.
+        books.stream()
+                .filter(n -> n.isAvailable())
+                .min(Comparator.comparing(Book::getPublicationYear));
+        //Znajdź autora, który ma najwięcej książek w zbiorze.
+        books.stream()
+                .collect(Collectors.groupingBy(Book::getAuthor, Collectors.counting()))
+                .entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+        //Utwórz mapę, gdzie kluczem jest rok publikacji, a wartością lista książek opublikowanych w tym roku.
+        System.out.println("Utwórz mapę, gdzie kluczem jest rok publikacji, a wartością lista książek opublikowanych w tym roku.");
+        Map<Integer, List<Book>> collect1 = books.stream()
+                .collect(Collectors.groupingBy(Book::getPublicationYear));
+        System.out.println(collect1);
+
+        //Znajdź trzy najdroższe książki w zbiorze.
+        books.stream()
+                .sorted(Comparator.comparing(Book::getPrice).reversed())
+                .limit(3)
+                .collect(Collectors.toList());
+        //Sprawdź, czy wszystkie książki są dostępne.
+        boolean areAllAvailable = books.stream()
+                .allMatch(Book::isAvailable);
+        //Znajdź książkę z największą liczbą autorów.
+        books.stream()
+                .max(Comparator.comparing(n -> n.getAuthor().split(", ").length))
+                .orElse(null);
+        ;
+        //Znajdź najwcześniej opublikowaną książkę w każdym roku.
+        Map<Integer, Optional<Book>> collect2 = books.stream()
+                .collect(Collectors.groupingBy(Book::getPublicationYear
+                        , Collectors.minBy(Comparator.comparing(Book::getPublicationYear))));
+        //Oblicz średnią cenę książek dla każdego autora.
+        books.stream()
+                .collect(Collectors.groupingBy(Book::getAuthor
+                        , Collectors.averagingDouble(Book::getPrice)));
+        //Znajdź najtańszą dostępną książkę autorstwa konkretnego autora.
+        books.stream()
+                .filter(Book::isAvailable)
+                .collect(Collectors.groupingBy(Book::getAuthor
+                        , Collectors.minBy((b1, b2) -> Double.compare(b1.getPrice(), b2.getPrice()))));
+        //Utwórz listę książek z unikalnymi tytułami.
+        books.stream().
+                map(Book::getTitle)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     private static boolean isNumberFirst(int year) {
