@@ -3,6 +3,7 @@ package LessonStream;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class UserTest {
     public static void main(String[] args) {
@@ -50,6 +51,63 @@ public class UserTest {
         user11.addInferior(user13);
         user13.addInferior(user14);
         user14.addInferior(user15);
+//Znajdź podwładnego (z dowolnego stanowiska) kazdego użytkownika, który ma najmniejszą pensję.
+        Map<User, Optional<User>> collect8 = users.stream()
+                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                        .min(Comparator.comparingDouble(User::getSalary))));
+//Oblicz sumę pensji wszystkich podwładnych dla każdego użytkownika.
+        Map<User, Double> collect13 = users.stream().collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                .mapToDouble(User::getSalary).sum()));
+//Znajdź podwładnego kazdego użytkownika, który pracuje na tym samym stanowisku co użytkownik
+// i ma największą różnicę wieku w porównaniu do tego użytkownika.
+        Map<User, Optional<User>> collect15 = users.stream()
+                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                        .filter(inferior -> inferior.getJob() == user.getJob())
+                        .max(Comparator.comparingInt(inferior -> Math.abs(inferior.getAge() - user.getAge())))));
+
+//Posortuj podwładnych każdego użytkownika według ich wieku malejąco.
+        Map<User, Stream<User>> collect14 = users.stream()
+                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                        .sorted(Comparator.comparing(User::getAge).reversed())));
+//Znajdź podwładnych kazdego użytkownika, którzy mają wiek pomiędzy 25 a 35 lat
+// i zarabiają powyżej średniej pensji wszystkich deweloperów.
+        Map<User, Stream<User>> collect19 = users.stream()
+                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                        .filter(inferior -> inferior.getAge() > 25 && inferior.getAge() < 35)
+                        .filter(inferior -> inferior.getSalary() > users.stream()
+                                .mapToDouble(User::getSalary)
+                                .average()
+                                .orElse(0.0))));
+
+//Uzyskaj listę wszystkich podwładnych użytkowników, którzy pracują na tym samym stanowisku co użytkownik
+// i mają wiek pomiędzy 30 a 40 lat.
+        Map<User, Stream<User>> collect20 = users.stream()
+                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                        .filter(inferior -> inferior.getJob() == user.getJob()
+                                && inferior.getAge() > 30 && inferior.getAge() < 40)));
+//Oblicz średnią pensję dla podwładnych każdego użytkownika.
+        Map<User, OptionalDouble> collect18 = users.stream().
+                collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                        .mapToDouble(User::getSalary)
+                        .average()));
+//Znajdź podwładnych kazdego użytkownika, którzy pracują na różnych stanowiskach niż użytkownik i mają wiek poniżej 30 lat.
+        Map<User, Stream<User>> collect17 = users.stream()
+                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                        .filter(inferior -> inferior.getJob() != user.getJob() && inferior.getAge() < 30)));
+//Uzyskaj listę unikalnych nazwisk wszystkich podwładnych użytkownika.
+        List<String> collect16 = users.stream()
+                .flatMap(user -> user.getInferiors().stream())
+                .map(User::getSurname)
+                .distinct()
+                .collect(Collectors.toList());
+//Znajdź podwładnego kazdego użytkownika, który zarabia najbliżej średniej pensji dla użytkownika w jego języku programowania.
+        Map<User, Optional<User>> collect21 = users.stream()
+                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                        .filter(inferior -> inferior.getJob() == user.getJob())
+                        .min(Comparator.comparingDouble(inferior -> Math.abs(inferior.getSalary() - users.stream()
+                                .mapToDouble(User::getSalary)
+                                .average()
+                                .orElse(0.0))))));
 //Oblicz średnią pensję dla wszystkich podwładnych Java Developerów dla danego użytkownika.
         Map<User, Double> collect3 = users.stream()
                 .filter(n -> n.getJob() == Job.JAVA_DEVELOPER)
