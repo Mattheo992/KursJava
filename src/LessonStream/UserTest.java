@@ -75,11 +75,11 @@ public class UserTest {
         Map<User, List<User>> collect7 = users.stream()
                 .filter(n -> n.getJob() == Job.JAVA_DEVELOPER && n.getSalary() > 5000)
                 .collect(Collectors.toMap(Function.identity(), User::getInferiors));
-//Oblicz średnią wieku dla wszystkich podwładnych dla każdego stanowiska pracy.
-        Map<User, OptionalDouble> collect8 = users.stream()
-                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
-                        .mapToInt(User::getAge)
-                        .average()));
+//Oblicz średnią wieku dla wszystkich podwładnych dla każdego stanowiska pracy. do poprawy
+        OptionalDouble average1 = users.stream()
+                .flatMap(user -> user.getInferiors().stream())
+                .mapToInt(User::getAge)
+                .average();
 //Znajdź najmłodszego podwładnego dla każdego stanowiska pracy.
         Map<Job, Optional<User>> collect11 = users.stream()
                 .flatMap(n -> n.getInferiors().stream())
@@ -87,11 +87,11 @@ public class UserTest {
                         .minBy(Comparator.comparingInt(User::getAge))));
 
 //Uzyskaj listę unikalnych imion wszystkich podwładnych danego użytkownika.
-        Map<User, List<String>> collect9 = users.stream()
-                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
-                        .map(User::getName)
-                        .distinct()
-                        .collect(Collectors.toList())));
+        List<String> collect9 = users.stream()
+                .flatMap(user -> user.getInferiors().stream())
+                .map(User::getName)
+                .distinct()
+                .collect(Collectors.toList());
 //Znajdź podwładnego, który zarabia najwięcej i jednocześnie ma najwięcej podwładnych.
         Map<User, Optional<User>> collect10 = users.stream()
                 .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
@@ -100,14 +100,14 @@ public class UserTest {
 //Zlicz liczbę unikalnych stanowisk pracy wszystkich podwładnych dla danego użytkownika.
         Map<User, Long> collect12 = users.stream()
                 .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
-                        .map(User::getJob).
-                        distinct()
+                        .map(User::getJob)
+                        .distinct()
                         .count()));
 
         //pracownicy Java
-        List < User > javaDevelopers = users.stream()
-                                .filter(n -> n.getJob() == Job.JAVA_DEVELOPER)
-                                .toList();
+        List<User> javaDevelopers = users.stream()
+                .filter(n -> n.getJob() == Job.JAVA_DEVELOPER)
+                .toList();
 
         double totalSalary = users.stream()
                 .mapToDouble(User::getSalary)
