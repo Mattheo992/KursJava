@@ -98,7 +98,14 @@ public class UserTest {
                         .max(Comparator.comparingDouble(User::getSalary).thenComparing(n -> n.getInferiors().size()))));
 
 //Zlicz liczbę unikalnych stanowisk pracy wszystkich podwładnych dla danego użytkownika.
-                        List < User > javaDevelopers = users.stream()
+        Map<User, Long> collect12 = users.stream()
+                .collect(Collectors.toMap(Function.identity(), user -> user.getInferiors().stream()
+                        .map(User::getJob).
+                        distinct()
+                        .count()));
+
+        //pracownicy Java
+        List < User > javaDevelopers = users.stream()
                                 .filter(n -> n.getJob() == Job.JAVA_DEVELOPER)
                                 .toList();
 
